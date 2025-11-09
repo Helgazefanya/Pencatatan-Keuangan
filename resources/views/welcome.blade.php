@@ -6,7 +6,6 @@
 
     <title>Pencatatan Uang App</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
     <div class="flex flex-col items-center justify-center min-h-screen text-center px-6">
