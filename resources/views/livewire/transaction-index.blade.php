@@ -1,7 +1,6 @@
 <div class="p-4">
     <div class="p-6 bg-gray-50 min-h-screen">
 
-        <!-- Header + Tombol Tambah -->
         <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-gray-800">Catatan Keuangan</h2>
@@ -16,24 +15,20 @@
             </button>
         </div>
 
-        <!-- Summary Grid -->
         <div class="flex justify-between gap-6 mb-6">
 
-            <!-- Pemasukan -->
             <div
                 class="flex-1 bg-green-500 text-black rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
                 <h3 class="text-sm font-semibold uppercase tracking-wide">Pemasukan</h3>
                 <p class="text-2xl font-bold mt-2">@currency($totalIncome)</p>
             </div>
 
-            <!-- Pengeluaran -->
             <div
                 class="flex-1 bg-red-500 text-black rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
                 <h3 class="text-sm font-semibold uppercase tracking-wide">Pengeluaran</h3>
                 <p class="text-2xl font-bold mt-2">@currency($totalExpense)</p>
             </div>
 
-            <!-- Total Saldo -->
             <div
                 class="flex-1 bg-blue-500 text-black rounded-xl p-6 shadow-lg flex flex-col items-center justify-center">
                 <h3 class="text-sm font-semibold uppercase tracking-wide">Total Saldo</h3>
@@ -41,8 +36,6 @@
             </div>
 
         </div>
-
-        <!-- Statistik Transaksi -->
 
         <div class="bg-white p-4 rounded-lg shadow mb-6">
             <h3 class="text-lg font-semibold mb-4">Statistik Transaksi</h3>
@@ -58,71 +51,88 @@
         </div>
 
 
-      <!-- Filter + Search -->
-<div class="bg-white p-4 rounded-lg shadow mb-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div class="bg-white p-4 rounded-lg shadow mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
-        <!-- Search -->
-        <div class="relative w-full md:w-1/3">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </span>
-            <input 
-                wire:model.live.debounce.300ms="search" 
-                type="text" 
-                placeholder="Cari transaksi (judul, tanggal, jumlah)..." 
-                class="w-full pl-10 pr-10 py-2 rounded-full border focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm"
-                autocomplete="off"
-            >
-            @if($search)
-                <button 
-                    wire:click="$set('search', '')" 
-                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
-                >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            @endif
-        </div>
+                <div class="relative w-full md:w-1/3">
+                    
+                    <label for="search_tx" class="sr-only">Cari transaksi</label>
+                    
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
+                    <input 
+                        wire:model.live.debounce.300ms="search" 
+                        type="text" 
+                        placeholder="Cari transaksi (judul, tanggal, jumlah)..." 
+                        class="w-full pl-10 pr-10 py-2 rounded-full border focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm"
+                        autocomplete="off"
+                        
+                        id="search_tx"
+                        name="search"
+                    >
+                    @if($search)
+                        <button 
+                            wire:click="$set('search', '')" 
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                            
+                            aria-label="Hapus pencarian"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    @endif
+                </div>
 
-        <!-- Filter + Tanggal -->
-        <div class="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
-            <select 
-                wire:model.live="filterType"
-                class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            >
-                <option value="all">Semua</option>
-                <option value="income">Pemasukan</option>
-                <option value="expense">Pengeluaran</option>
-            </select>
+                <div class="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
+                    
+                    <label for="filter_type" class="sr-only">Filter Tipe Transaksi</label>
+                    
+                    <select 
+                        wire:model.live="filterType"
+                        class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        
+                        id="filter_type"
+                        name="filter_type"
+                    >
+                        <option value="all">Semua</option>
+                        <option value="income">Pemasukan</option>
+                        <option value="expense">Pengeluaran</option>
+                    </select>
 
-            <div class="flex items-center gap-2">
-                <label class="text-sm text-gray-600">Dari</label>
-                <input 
-                    wire:model.live="fromDate" 
-                    type="date"
-                    class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                >
+                    <div class="flex items-center gap-2">
+                        
+                        <label for="filter_from_date" class="text-sm text-gray-600">Dari</label>
+                        <input 
+                            wire:model.live="fromDate" 
+                            type="date"
+                            class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            
+                            id="filter_from_date"
+                            name="from_date"
+                        >
 
-                <label class="text-sm text-gray-600">Sampai</label>
-                <input 
-                    wire:model.live="toDate" 
-                    type="date"
-                    class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                >
+                        <label for="filter_to_date" class="text-sm text-gray-600">Sampai</label>
+                        <input 
+                            wire:model.live="toDate" 
+                            type="date"
+                            class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            
+                            id="filter_to_date"
+                            name="to_date"
+                        >
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
 
         {{--
-        <!-- Flash Message -->
         @if(session()->has('message'))
         <div class="mb-4 p-3 rounded bg-green-100 border border-green-300 text-green-800 shadow">
             {{ session('message') }}
@@ -133,7 +143,6 @@
         layouts/app.blade.php --}}
 
 
-        <!-- History Transaksi (Tabel) -->
         <div class="bg-white p-4 rounded-lg shadow">
             <table class="min-w-full table-auto border-collapse">
                 <thead>
@@ -190,7 +199,6 @@
                 </tbody>
             </table>
 
-            <!-- Pagination -->
             <div class="mt-4">
                 {{ $transactions->links() }}
             </div>
@@ -198,7 +206,6 @@
 
     </div>
 
-    <!-- Modal Transaction Form -->
     @if($isOpen)
     <div x-data class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-2xl rounded-lg p-5 shadow-lg" @click.away="Livewire.emit('closeForm')">
@@ -208,8 +215,8 @@
             <form wire:submit.prevent="save" class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label>Jenis Transaksi</label>
-                        <select wire:model="type" class="border p-2 w-full rounded">
+                        <label for="tx_type">Jenis Transaksi</label>
+                        <select wire:model="type" id="tx_type" name="type" class="border p-2 w-full rounded">
                             <option value="">Pilih jenis</option>
                             <option value="income">Pemasukan</option>
                             <option value="expense">Pengeluaran</option>
@@ -217,32 +224,32 @@
                         @error('type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label>Tanggal</label>
-                        <input type="date" wire:model="date" class="border p-2 w-full rounded">
+                        <label for="tx_date">Tanggal</label>
+                        <input type="date" wire:model="date" id="tx_date" name="date" class="border p-2 w-full rounded">
                         @error('date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
                 </div>
 
                 <div>
-                    <label>Judul</label>
-                    <input type="text" wire:model="title" class="border p-2 w-full rounded">
+                    <label for="tx_title">Judul</label>
+                    <input type="text" wire:model="title" id="tx_title" name="title" class="border p-2 w-full rounded">
                     @error('title') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
-                    <label>Jumlah</label>
-                    <input type="number" wire:model="amount" class="border p-2 w-full rounded">
+                    <label for="tx_amount">Jumlah</label>
+                    <input type="number" wire:model="amount" id="tx_amount" name="amount" class="border p-2 w-full rounded">
                     @error('amount') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
-                    <label>Deskripsi</label>
-                    <textarea wire:model="description" class="border p-2 w-full rounded"></textarea>
+                    <label for="tx_description">Deskripsi</label>
+                    <textarea wire:model="description" id="tx_description" name="description" class="border p-2 w-full rounded"></textarea>
                 </div>
 
                 <div>
-                    <label>Bukti (opsional)</label>
-                    <input type="file" wire:model="image" class="border p-2 w-full rounded">
+                    <label for="tx_image">Bukti (opsional)</label>
+                    <input type="file" wire:model="image" id="tx_image" name="image" class="border p-2 w-full rounded">
                     @if($existingImage)
                     <div class="mt-1 flex items-center gap-2">
                         <a target="_blank" href="{{ asset('storage/'.$existingImage) }}" class="underline text-sm">Lihat
@@ -357,7 +364,6 @@
                     renderOrUpdateChart(payload);
                 });
             }
-
             // Also check a safety case: if ApexCharts isn't loaded yet, log it.
             if (typeof ApexCharts === 'undefined') {
                 console.error('[TransactionIndex] ApexCharts is not loaded.');

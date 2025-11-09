@@ -45,7 +45,6 @@
     @livewireScripts
 
     <!-- AlpineJS (untuk modal) -->
-    <script src="//unpkg.com/alpinejs" defer></script>
 
     <!-- SweetAlert listener for Livewire browser events -->
     <script>
