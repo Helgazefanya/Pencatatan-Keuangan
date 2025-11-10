@@ -22,7 +22,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <x-nav-link :href="route('profile.show')" :active="request()->routeIs('profile.show')">
+                    <x-nav-link href="{{ url('/profile') }}" :active="request()->is('profile')">
                         Profile
                     </x-nav-link>
                 </li>
@@ -41,7 +41,7 @@
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <x-responsive-nav-link :href="route('profile.show')" :active="request()->routeIs('profile.show')">
+                                <x-responsive-nav-link href="{{ url('/profile') }}" :active="request()->is('profile')">
                                     Profile
                                 </x-responsive-nav-link>
                             </li>
