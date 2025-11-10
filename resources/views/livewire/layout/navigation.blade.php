@@ -13,7 +13,8 @@
 
         <!-- Menu -->
         <div class="collapse navbar-collapse" id="mainNavbar">
-            <!-- Left Nav -->
+
+            <!-- Left -->
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
@@ -28,18 +29,17 @@
                 </li>
             </ul>
 
-            <!-- Right Nav -->
+            <!-- Right -->
             <ul class="navbar-nav ms-auto">
 
                 @auth
-                    <!-- User Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button"
-                           data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                             {{ Auth::user()->name }}
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end">
+
                             <li>
                                 <x-responsive-nav-link href="{{ url('/profile') }}" :active="request()->is('profile')">
                                     Profile
@@ -49,10 +49,10 @@
                             <li><hr class="dropdown-divider"></li>
 
                             <li>
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form method="POST" action="{{ url('/logout') }}">
                                     @csrf
                                     <button class="dropdown-item fw-semibold"
-                                            onclick="event.preventDefault(); this.closest('form').submit();">
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
                                         Logout
                                     </button>
                                 </form>
