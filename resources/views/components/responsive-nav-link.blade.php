@@ -1,8 +1,8 @@
-@props(['active' => false])
+@props(['active'])
 
 @php
-$classes = ($active ?? false)
-            ? 'dropdown-item active fw-semibold'
+$classes = $active
+            ? 'dropdown-item active fw-bold'
             : 'dropdown-item';
 @endphp
 
