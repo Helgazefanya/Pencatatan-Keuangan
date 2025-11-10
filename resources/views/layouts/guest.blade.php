@@ -16,23 +16,21 @@
 
 </head>
 
-<body class="bg-light d-flex align-items-center" style="height:100vh;">
-    <div class="container d-flex justify-content-center">
-        <div class="text-center mb-4">
-            <a href="/" wire:navigate>
-                <x-application-logo class="w-20 h-20 text-secondary" />
-            </a>
-        </div>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height:100vh;">
 
-        <div class="card shadow" style="max-width: 450px; width:100%;">
-            <div class="card-body">
-                {{ $slot }}
-            </div>
+    <div class="text-center mb-4">
+        <a href="/" wire:navigate>
+            <x-application-logo style="width:80px;height:80px;" class="text-secondary" />
+        </a>
+    </div>
+
+    <div class="card shadow border-0" style="max-width: 420px; width:100%;">
+        <div class="card-body p-4">
+            {{ $slot }}
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

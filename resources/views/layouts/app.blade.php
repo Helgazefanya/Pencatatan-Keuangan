@@ -25,14 +25,13 @@
         <livewire:layout.navigation />
 
         @if (isset($header))
-        <header class="bg-white shadow-sm mb-4">
-            <div class="container py-4 px-3">
+        <header class="bg-white shadow-sm mb-4 border-bottom">
+            <div class="container py-4">
                 {{ $header }}
             </div>
         </header>
         @endif
 
-        <!-- Page Content -->
         <main class="container py-4">
             @yield('content')
         </main>
@@ -40,9 +39,10 @@
 
     @livewireScripts
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- SweetAlert event listeners -->
     <script>
         window.addEventListener('swal:alert', event => {
             const detail = event.detail || {};
