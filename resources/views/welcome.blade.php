@@ -5,59 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Pencatatan Uang App</title>
-
 </head>
-<body class="antialiased bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-    <div class="flex flex-col items-center justify-center min-h-screen text-center px-6">
-        <div class="max-w-3xl space-y-8">
+<body class="bg-dark text-white d-flex align-items-center justify-content-center min-vh-100">
 
-            <!-- Logo Section -->
-            <div class="flex justify-center mb-6">
-                <img 
-                    src="https://img.freepik.com/vektor-premium/logo-uang-tanda-logo-dolar_1174662-223.jpg?semt=ais_hybrid&w=740&q=80" 
-                    alt="App Logo" 
-                    class="w-40 h-40 rounded-full shadow-md border border-gray-700 bg-white object-contain">
-            </div>
+<div class="container text-center p-4">
 
-            <!-- Title -->
-            <h1 class="text-5xl font-bold mb-2">
-                <span class="text-red-500">Welcome to Pencatatan Uang App</span>
-            </h1>
-
-            <!-- Description -->
-            <p class="text-gray-400 text-lg max-w-lg mx-auto">
-                A simple Laravel application to record your income and expenses easily.
-            </p>
-
-            <!-- Buttons -->
-            @if (Route::has('login'))
-                <div class="flex justify-center gap-4 mt-8">
-                    @auth
-                        <a href="{{ url('/dashboard') }}"
-                           class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transition">
-                            Go to Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}"
-                           class="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition">
-                            Login
-                        </a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}"
-                               class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-lg shadow-md transition">
-                                Register
-                            </a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <!-- Footer -->
-            <footer class="mt-12 text-sm text-gray-500">
-                Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-            </footer>
-        </div>
+    <!-- Logo -->
+    <div class="mb-4">
+        <img 
+            src="https://img.freepik.com/vektor-premium/logo-uang-tanda-logo-dolar_1174662-223.jpg?semt=ais_hybrid&w=740&q=80" 
+            alt="App Logo"
+            class="rounded-circle border shadow bg-white"
+            style="width:150px; height:150px; object-fit:contain;"
+        >
     </div>
+
+    <!-- Title -->
+    <h1 class="fw-bold mb-2 text-danger">
+        Welcome to Pencatatan Uang App
+    </h1>
+
+    <!-- Description -->
+    <p class="text-light opacity-75 fs-5 mx-auto" style="max-width: 400px;">
+        A simple Laravel application to record your income and expenses easily.
+    </p>
+
+    <!-- Buttons -->
+    @if (Route::has('login'))
+        <div class="mt-4 d-flex justify-content-center gap-3">
+
+            @auth
+                <a href="{{ url('/dashboard') }}" class="btn btn-danger px-4 fw-semibold shadow">
+                    Go to Dashboard
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-danger px-4 fw-semibold shadow">
+                    Login
+                </a>
+
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="btn btn-light px-4 fw-semibold shadow">
+                        Register
+                    </a>
+                @endif
+            @endauth
+
+        </div>
+    @endif
+
+    <!-- Footer -->
+    <footer class="mt-5 text-secondary small">
+        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+    </footer>
+</div>
+
 </body>
 </html>
