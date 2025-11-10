@@ -8,44 +8,41 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Vite -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-    <!-- Livewire Styles -->
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+<body class="bg-light">
+    <div>
         <livewire:layout.navigation />
 
-        <!-- Page Heading -->
         @if (isset($header))
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <header class="bg-white shadow-sm mb-4">
+            <div class="container py-4 px-3">
                 {{ $header }}
             </div>
         </header>
         @endif
 
         <!-- Page Content -->
-        <main class="p-6">
+        <main class="container py-4">
             @yield('content')
         </main>
     </div>
 
-
-    <!-- Livewire Scripts -->
     @livewireScripts
 
-    <!-- AlpineJS (untuk modal) -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- SweetAlert listener for Livewire browser events -->
     <script>
         window.addEventListener('swal:alert', event => {
             const detail = event.detail || {};
@@ -57,7 +54,7 @@
                 showConfirmButton: detail.showConfirmButton ?? false,
             });
         });
-        // Also listen for Livewire emitted events for compatibility with older Livewire versions
+
         if (window.Livewire && typeof Livewire.on === 'function') {
             Livewire.on('swal:alert', detail => {
                 detail = detail || {};
@@ -71,12 +68,9 @@
             });
         }
     </script>
-    <!-- ApexCharts (used by pages/components) -->
+
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-    <!-- Place for pages/components to push additional scripts (e.g. ApexCharts initializers) -->
     @stack('scripts')
-
 </body>
-
 </html>
