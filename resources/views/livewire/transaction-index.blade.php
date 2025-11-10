@@ -7,8 +7,7 @@
                 <p class="text-muted mb-0">Ringkasan keuangan Anda</p>
             </div>
 
-            <button type="button" wire:click="openForm"
-                class="btn btn-primary">
+            <button type="button" wire:click="openForm" class="btn btn-primary">
                 + Tambah Transaksi
             </button>
         </div>
@@ -49,9 +48,9 @@
 
                 <div id="chart-data" style="display:none;">
                     {!! json_encode([
-                    'labels' => (array) $chartLabels,
-                    'income' => (array) $chartIncome,
-                    'expense' => (array) $chartExpense,
+                        'labels' => (array) $chartLabels,
+                        'income' => (array) $chartIncome,
+                        'expense' => (array) $chartExpense,
                     ]) !!}
                 </div>
             </div>
@@ -64,9 +63,7 @@
                     <div class="col-md-4 position-relative">
                         <label class="visually-hidden" for="search_tx">Cari transaksi</label>
                         <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-search"></i>
-                            </span>
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
                             <input 
                                 wire:model.live.debounce.300ms="search" 
                                 type="text" 
@@ -120,18 +117,14 @@
                                         {{ $tx->type == 'income' ? 'Pemasukan' : 'Pengeluaran' }}
                                     </span>
                                 </td>
-                                <td>
-                                    {{ $tx->type == 'income' ? '+' : '-' }} @currency($tx->amount)
-                                </td>
+                                <td>{{ $tx->type == 'income' ? '+' : '-' }} @currency($tx->amount)</td>
                                 <td>
                                     @if($tx->image)
-                                    <a target="_blank" href="{{ asset('storage/'.$tx->image) }}" class="link-primary">Lihat</a>
+                                        <a target="_blank" href="{{ asset('storage/'.$tx->image) }}" class="link-primary">Lihat</a>
                                     @endif
                                 </td>
                                 <td>
                                     <button wire:click="edit({{ $tx->id }})" class="btn btn-sm btn-warning me-1">Edit</button>
-
-                                    <!-- use confirmDelete to trigger SweetAlert confirmation -->
                                     <button wire:click="confirmDelete({{ $tx->id }})" type="button" class="btn btn-sm btn-danger">Hapus</button>
                                 </td>
                             </tr>
@@ -147,12 +140,11 @@
                 <div class="mt-3">
                     {{ $transactions->links() }}
                 </div>
-
             </div>
         </div>
-
     </div>
 
+    {{-- Modal form --}}
     @if($isOpen)
     <div wire:key="transaction-form-modal" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.4);">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -172,6 +164,7 @@
                             </select>
                             @error('type') <div class="text-danger small">{{ $message }}</div> @enderror
                         </div>
+
                         <div class="col-md-6">
                             <label for="tx_date" class="form-label">Tanggal</label>
                             <input type="date" wire:model="date" id="tx_date" name="date" class="form-control">
@@ -199,10 +192,10 @@
                             <label for="tx_image" class="form-label">Bukti (opsional)</label>
                             <input type="file" wire:model="image" id="tx_image" name="image" class="form-control">
                             @if($existingImage)
-                            <div class="mt-2">
-                                <a target="_blank" href="{{ asset('storage/'.$existingImage) }}" class="link-primary small">Lihat bukti</a>
-                                <button type="button" wire:click="removeImage" class="btn btn-link btn-sm text-danger">Hapus</button>
-                            </div>
+                                <div class="mt-2">
+                                    <a target="_blank" href="{{ asset('storage/'.$existingImage) }}" class="link-primary small">Lihat bukti</a>
+                                    <button type="button" wire:click="removeImage" class="btn btn-link btn-sm text-danger">Hapus</button>
+                                </div>
                             @endif
                             @error('image') <div class="text-danger small">{{ $message }}</div> @enderror
                         </div>
@@ -221,92 +214,86 @@
 
 @push('scripts')
 <script>
-    (function () {
-        let chart = null;
+window.addEventListener('swal:alert', event => {
+    Swal.fire({
+        icon: event.detail.type,
+        title: event.detail.message,
+        timer: 2000,
+        showConfirmButton: false,
+    });
+});
 
-        function renderOrUpdateChart(payload) {
-            const labels = payload.labels || [];
-            const income = (payload.income || []).map(v => {
-                const n = parseFloat(String(v).replace(/,/g, ''));
-                return Number.isFinite(n) ? n : 0;
-            });
-            const expense = (payload.expense || []).map(v => {
-                const n = parseFloat(String(v).replace(/,/g, ''));
-                return Number.isFinite(n) ? n : 0;
-            });
+window.addEventListener('swal:confirm', event => {
+    Swal.fire({
+        title: event.detail.title,
+        text: event.detail.text,
+        icon: event.detail.icon || 'warning',
+        showCancelButton: true,
+        confirmButtonText: event.detail.confirmButtonText || 'Ya',
+        cancelButtonText: event.detail.cancelButtonText || 'Tidak',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Livewire.dispatch(event.detail.onConfirmed, { id: event.detail.data });
+        } else if (event.detail.onCancelled) {
+            Livewire.dispatch(event.detail.onCancelled);
+        }
+    });
+});
 
-            const container = document.querySelector('#transactionsChart');
+// === Grafik ApexCharts ===
+(function () {
+    let chart = null;
 
-            if (!labels.length) {
-                if (chart) {
-                    try { chart.destroy(); } catch (e) {}
-                    chart = null;
-                }
-                container.innerHTML = '<div class="p-4 text-center text-muted">Belum ada data untuk ditampilkan.</div>';
-                return;
-            }
+    function renderOrUpdateChart(payload) {
+        const labels = payload.labels || [];
+        const income = (payload.income || []).map(v => Number(v) || 0);
+        const expense = (payload.expense || []).map(v => Number(v) || 0);
+        const container = document.querySelector('#transactionsChart');
 
-            container.innerHTML = '';
-
-            const options = {
-                chart: { type: 'bar', height: 350 },
-                series: [
-                    { name: 'Pemasukan', data: income },
-                    { name: 'Pengeluaran', data: expense }
-                ],
-                xaxis: { categories: labels },
-                colors: ['#22c55e', '#ef4444'],
-                dataLabels: { enabled: false },
-                tooltip: { y: { formatter: function (val) { return new Intl.NumberFormat().format(val); } } }
-            };
-
-            if (!chart) {
-                try {
-                    chart = new ApexCharts(container, options);
-                    chart.render();
-                } catch (err) {
-                    console.error('error creating/redering chart', err, { options, labels, income, expense });
-                    try { if (chart && typeof chart.destroy === 'function') chart.destroy(); } catch (e) {}
-                    chart = null;
-                }
-            } else {
-                try {
-                    chart.updateOptions({ xaxis: { categories: labels } });
-                    chart.updateSeries([ { name: 'Pemasukan', data: income }, { name: 'Pengeluaran', data: expense } ]);
-                } catch (e) {
-                    try { chart.destroy(); } catch (ee) {}
-                    try {
-                        chart = new ApexCharts(container, options);
-                        chart.render();
-                    } catch (err) {
-                        console.error('error recreating chart', err);
-                        try { if (chart && typeof chart.destroy === 'function') chart.destroy(); } catch (e) {}
-                        chart = null;
-                    }
-                }
-            }
+        if (!labels.length) {
+            if (chart) chart.destroy();
+            chart = null;
+            container.innerHTML = '<div class="p-4 text-center text-muted">Belum ada data untuk ditampilkan.</div>';
+            return;
         }
 
-        document.addEventListener('livewire:init', function () {
-            function readPayloadFromDom() {
-                const raw = document.getElementById('chart-data')?.textContent || '{}';
-                try { return JSON.parse(raw); } catch (e) { console.error('invalid JSON in #chart-data', e); return {}; }
-            }
+        container.innerHTML = '';
+        const options = {
+            chart: { type: 'bar', height: 350 },
+            series: [
+                { name: 'Pemasukan', data: income },
+                { name: 'Pengeluaran', data: expense }
+            ],
+            xaxis: { categories: labels },
+            colors: ['#22c55e', '#ef4444'],
+            dataLabels: { enabled: false },
+            tooltip: { y: { formatter: val => new Intl.NumberFormat().format(val) } }
+        };
 
-            const initial = readPayloadFromDom();
-            renderOrUpdateChart(initial);
+        if (!chart) {
+            chart = new ApexCharts(container, options);
+            chart.render();
+        } else {
+            chart.updateOptions({ xaxis: { categories: labels } });
+            chart.updateSeries([
+                { name: 'Pemasukan', data: income },
+                { name: 'Pengeluaran', data: expense }
+            ]);
+        }
+    }
 
-            if (window.Livewire && typeof Livewire.hook === 'function') {
-                Livewire.hook('message.processed', (message, component) => {
-                    const payload = readPayloadFromDom();
-                    renderOrUpdateChart(payload);
-                });
-            }
+    document.addEventListener('livewire:init', function () {
+        function readPayloadFromDom() {
+            const raw = document.getElementById('chart-data')?.textContent || '{}';
+            try { return JSON.parse(raw); } catch (e) { return {}; }
+        }
 
-            if (typeof ApexCharts === 'undefined') {
-                console.error('ApexCharts is not loaded.');
-            }
+        renderOrUpdateChart(readPayloadFromDom());
+
+        Livewire.hook('message.processed', () => {
+            renderOrUpdateChart(readPayloadFromDom());
         });
-    })();
+    });
+})();
 </script>
 @endpush

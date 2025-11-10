@@ -15,7 +15,6 @@ class TransactionIndex extends Component
 {
     use WithPagination, WithFileUploads;
 
-    // Use Bootstrap pagination theme so links() renders Bootstrap markup
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
@@ -26,10 +25,8 @@ class TransactionIndex extends Component
     public $totalIncome = 0;
     public $totalExpense = 0;
 
-    // Modal state
     public $isOpen = false;
 
-    // Form fields
     public $transactionId;
     public $type;
     public $title;
@@ -39,7 +36,6 @@ class TransactionIndex extends Component
     public $image;
     public $existingImage;
 
-    // Chart
     public $chartLabels = [];
     public $chartIncome = [];
     public $chartExpense = [];
@@ -57,28 +53,28 @@ class TransactionIndex extends Component
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatchBrowserEvent('chart-updated');
+        $this->dispatch('chart-updated');
     }
 
     public function updatedFilterType()
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatchBrowserEvent('chart-updated');
+        $this->dispatch('chart-updated');
     }
 
     public function updatedFromDate()
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatchBrowserEvent('chart-updated');
+        $this->dispatch('chart-updated');
     }
 
     public function updatedToDate()
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatchBrowserEvent('chart-updated');
+        $this->dispatch('chart-updated');
     }
 
     public function openForm()
@@ -112,21 +108,19 @@ class TransactionIndex extends Component
 
         $tx->delete();
 
-        // Browser event for SweetAlert
-        $this->dispatchBrowserEvent('swal:alert', [
+        $this->dispatch('swal:alert', [
             'type' => 'success',
-            'message' => 'Data berhasil dihapus'
+            'message' => 'Data berhasil dihapus',
         ]);
 
         $this->updateChartData();
-        $this->dispatchBrowserEvent('chart-updated');
+        $this->dispatch('chart-updated');
         $this->resetPage();
     }
 
     public function confirmDelete($id)
     {
-        // Use browser event to trigger SweetAlert confirm dialog
-        $this->dispatchBrowserEvent('swal:confirm', [
+        $this->dispatch('swal:confirm', [
             'title' => 'Konfirmasi Hapus',
             'text' => 'Apakah Anda yakin ingin menghapus data ini?',
             'icon' => 'warning',
@@ -134,15 +128,15 @@ class TransactionIndex extends Component
             'cancelButtonText' => 'Tidak',
             'onConfirmed' => 'deleteConfirmed',
             'onCancelled' => 'cancelDelete',
-            'data' => $id
+            'data' => $id,
         ]);
     }
 
     public function cancelDelete()
     {
-        $this->dispatchBrowserEvent('swal:alert', [
+        $this->dispatch('swal:alert', [
             'type' => 'info',
-            'message' => 'Penghapusan dibatalkan'
+            'message' => 'Penghapusan dibatalkan',
         ]);
     }
 
@@ -187,14 +181,14 @@ class TransactionIndex extends Component
 
         Transaction::updateOrCreate(['id' => $this->transactionId], $data);
 
-        $this->dispatchBrowserEvent('swal:alert', [
+        $this->dispatch('swal:alert', [
             'type' => 'success',
-            'message' => $this->transactionId ? 'Data berhasil diedit' : 'Data berhasil ditambah'
+            'message' => $this->transactionId ? 'Data berhasil diedit' : 'Data berhasil ditambah',
         ]);
 
         $this->closeForm();
         $this->updateChartData();
-        $this->dispatchBrowserEvent('chart-updated');
+        $this->dispatch('chart-updated');
         $this->resetPage();
     }
 
@@ -207,13 +201,13 @@ class TransactionIndex extends Component
         $this->existingImage = null;
         $this->image = null;
 
-        $this->dispatchBrowserEvent('swal:alert', [
+        $this->dispatch('swal:alert', [
             'type' => 'success',
-            'message' => 'Bukti berhasil dihapus'
+            'message' => 'Bukti berhasil dihapus',
         ]);
 
         $this->updateChartData();
-        $this->dispatchBrowserEvent('chart-updated');
+        $this->dispatch('chart-updated');
     }
 
     private function resetForm()
@@ -291,7 +285,6 @@ class TransactionIndex extends Component
 
         $transactions = $query->orderBy('date', 'desc')->paginate(20);
 
-        // Totals sesuai filter
         $this->totalIncome = Transaction::where('user_id', Auth::id())
             ->where('type', 'income')
             ->when($this->fromDate, fn($q) => $q->whereDate('date', '>=', $this->fromDate))
