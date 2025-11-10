@@ -49,6 +49,7 @@ class TransactionIndex extends Component
         $this->updateChartData();
     }
 
+    // ======= SEARCH, FILTER, CHART =======
     public function updatedSearch()
     {
         $this->resetPage();
@@ -77,10 +78,17 @@ class TransactionIndex extends Component
         $this->dispatch('chart-updated');
     }
 
+    // ======= FORM OPERATIONS =======
     public function openForm()
     {
         $this->resetForm();
         $this->isOpen = true;
+    }
+
+    public function closeForm()
+    {
+        $this->resetForm();
+        $this->isOpen = false;
     }
 
     public function edit($id)
@@ -96,6 +104,21 @@ class TransactionIndex extends Component
         $this->existingImage = $tx->image;
 
         $this->isOpen = true;
+    }
+
+    // ======= DELETE LOGIC =======
+    public function confirmDelete($id)
+    {
+        $this->dispatch('swal:confirm', [
+            'title' => 'Konfirmasi Hapus',
+            'text' => 'Apakah Anda yakin ingin menghapus data ini?',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Ya',
+            'cancelButtonText' => 'Tidak',
+            'onConfirmed' => 'deleteConfirmed',
+            'onCancelled' => 'cancelDelete',
+            'data' => $id,
+        ]);
     }
 
     public function delete($id)
@@ -118,20 +141,6 @@ class TransactionIndex extends Component
         $this->resetPage();
     }
 
-    public function confirmDelete($id)
-    {
-        $this->dispatch('swal:confirm', [
-            'title' => 'Konfirmasi Hapus',
-            'text' => 'Apakah Anda yakin ingin menghapus data ini?',
-            'icon' => 'warning',
-            'confirmButtonText' => 'Ya',
-            'cancelButtonText' => 'Tidak',
-            'onConfirmed' => 'deleteConfirmed',
-            'onCancelled' => 'cancelDelete',
-            'data' => $id,
-        ]);
-    }
-
     public function cancelDelete()
     {
         $this->dispatch('swal:alert', [
@@ -140,12 +149,7 @@ class TransactionIndex extends Component
         ]);
     }
 
-    public function closeForm()
-    {
-        $this->resetForm();
-        $this->isOpen = false;
-    }
-
+    // ======= SAVE =======
     public function save()
     {
         $this->validate([
@@ -192,6 +196,7 @@ class TransactionIndex extends Component
         $this->resetPage();
     }
 
+    // ======= REMOVE IMAGE =======
     public function removeImage()
     {
         if ($this->existingImage && Storage::disk('public')->exists($this->existingImage)) {
@@ -210,6 +215,7 @@ class TransactionIndex extends Component
         $this->dispatch('chart-updated');
     }
 
+    // ======= HELPER FUNCTIONS =======
     private function resetForm()
     {
         $this->transactionId = null;
