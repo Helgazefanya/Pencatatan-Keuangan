@@ -15,7 +15,8 @@ class TransactionIndex extends Component
 {
     use WithPagination, WithFileUploads;
 
-    protected $paginationTheme = 'tailwind';
+    // Use Bootstrap pagination theme so links() renders Bootstrap markup
+    protected $paginationTheme = 'bootstrap';
 
     public $search = '';
     public $filterType = 'all';
@@ -56,28 +57,28 @@ class TransactionIndex extends Component
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatch('chart-updated');
+        $this->dispatchBrowserEvent('chart-updated');
     }
 
     public function updatedFilterType()
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatch('chart-updated');
+        $this->dispatchBrowserEvent('chart-updated');
     }
 
     public function updatedFromDate()
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatch('chart-updated');
+        $this->dispatchBrowserEvent('chart-updated');
     }
 
     public function updatedToDate()
     {
         $this->resetPage();
         $this->updateChartData();
-        $this->dispatch('chart-updated');
+        $this->dispatchBrowserEvent('chart-updated');
     }
 
     public function openForm()
@@ -111,18 +112,21 @@ class TransactionIndex extends Component
 
         $tx->delete();
 
-        $this->dispatch('swal:alert', [
+        // Browser event for SweetAlert
+        $this->dispatchBrowserEvent('swal:alert', [
             'type' => 'success',
             'message' => 'Data berhasil dihapus'
         ]);
 
         $this->updateChartData();
-        $this->dispatch('chart-updated');
+        $this->dispatchBrowserEvent('chart-updated');
+        $this->resetPage();
     }
 
     public function confirmDelete($id)
     {
-        $this->dispatch('swal:confirm', [
+        // Use browser event to trigger SweetAlert confirm dialog
+        $this->dispatchBrowserEvent('swal:confirm', [
             'title' => 'Konfirmasi Hapus',
             'text' => 'Apakah Anda yakin ingin menghapus data ini?',
             'icon' => 'warning',
@@ -136,7 +140,7 @@ class TransactionIndex extends Component
 
     public function cancelDelete()
     {
-        $this->dispatch('swal:alert', [
+        $this->dispatchBrowserEvent('swal:alert', [
             'type' => 'info',
             'message' => 'Penghapusan dibatalkan'
         ]);
@@ -183,14 +187,15 @@ class TransactionIndex extends Component
 
         Transaction::updateOrCreate(['id' => $this->transactionId], $data);
 
-        $this->dispatch('swal:alert', [
+        $this->dispatchBrowserEvent('swal:alert', [
             'type' => 'success',
             'message' => $this->transactionId ? 'Data berhasil diedit' : 'Data berhasil ditambah'
         ]);
 
         $this->closeForm();
         $this->updateChartData();
-        $this->dispatch('chart-updated');
+        $this->dispatchBrowserEvent('chart-updated');
+        $this->resetPage();
     }
 
     public function removeImage()
@@ -202,13 +207,13 @@ class TransactionIndex extends Component
         $this->existingImage = null;
         $this->image = null;
 
-        $this->dispatch('swal:alert', [
+        $this->dispatchBrowserEvent('swal:alert', [
             'type' => 'success',
             'message' => 'Bukti berhasil dihapus'
         ]);
 
         $this->updateChartData();
-        $this->dispatch('chart-updated');
+        $this->dispatchBrowserEvent('chart-updated');
     }
 
     private function resetForm()
