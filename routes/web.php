@@ -2,33 +2,46 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Livewire\Actions\Logout; // ✅ Tambahkan ini agar Logout bisa digunakan
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
+// Halaman welcome (utama)
 Route::view('/', 'welcome');
 
+// Dashboard
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Profile
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-
-// group auth
+// Group auth untuk halaman yang dilindungi
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    // ✅ Tambahkan route logout POST agar tombol logout bekerja
+    Route::post('/logout', function (Logout $logout) {
+        $logout(); // Jalankan aksi logout dari class Logout
+        return redirect('/login'); // Arahkan kembali ke halaman login
+    })->name('logout');
 });
 
-
+// Route untuk menampilkan file bukti (gambar transaksi)
 Route::get('/bukti/{filename}', function ($filename) {
-    // sanitize input to avoid directory traversal
+    // Hindari path traversal
     $filename = str_replace(['..', "\\"], '', $filename);
 
-    // The saved DB value may already contain the `transactions/` prefix (e.g. "transactions/abc.jpg").
-    // Use the filename as-is relative to storage/app/public so we don't duplicate the segment.
+    // Gunakan path relatif dari storage/app/public/
     $path = storage_path('app/public/' . ltrim($filename, '/'));
 
     if (!file_exists($path)) {
@@ -38,4 +51,5 @@ Route::get('/bukti/{filename}', function ($filename) {
     return response()->file($path);
 })->name('bukti.show');
 
+// Auth routes (login, register, dll)
 require __DIR__ . '/auth.php';
